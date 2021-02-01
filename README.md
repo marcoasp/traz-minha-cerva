@@ -3,7 +3,7 @@ App para encontrar cervejas
 
 To do
 
-- Cadastro Ofertas
+- ~~Cadastro Ofertas~~
   - Localização
   - Nome
   - Preço/l
