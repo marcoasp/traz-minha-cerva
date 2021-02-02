@@ -30,11 +30,9 @@ public class SaleController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Mono<SaleDTO> create(@RequestBody Mono<SaleDTO> newSaleDto) {
-        return newSaleDto.map(s -> Sale.from(s.getName(), s.getPricePerLiter(), s.getTags(), s.getLocation()))
-                .flatMap(repository::save)
-                .map(saleMapper::toDto)
-                .log();
+    public Mono<SaleDTO> create(@RequestBody SaleDTO newSaleDto) {
+        return repository.save(Sale.from(newSaleDto.getName(), newSaleDto.getPricePerLiter(), newSaleDto.getTags(), newSaleDto.getLocation()))
+                .map(saleMapper::toDto);
     }
 
     @PutMapping("/{id}/status/{newStatus}")

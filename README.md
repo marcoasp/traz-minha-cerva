@@ -8,8 +8,11 @@ To do
   - Nome
   - Preço/l
   - Tags
-- Cadastro Preferências
+- ~~Cadastro Usuário~~
+  - Nome    
+  - Email
   - Localização
+- Cadastro Preferências de Usuário
   - Preço/l (between)
   - Nome
   - Tags
