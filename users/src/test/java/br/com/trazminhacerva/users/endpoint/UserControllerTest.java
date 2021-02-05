@@ -12,6 +12,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +23,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
 
 /**
  * @author Marco Prado
@@ -45,7 +52,9 @@ public class UserControllerTest {
                 .build();
 
 
-        webTestClient.post().uri("/")
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt.claim("userId", "abcd")))
+                .post().uri("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(newUser), UserDTO.class)
                 .exchange()
@@ -75,7 +84,9 @@ public class UserControllerTest {
                 .build();
 
 
-        webTestClient.put().uri("/abcd")
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt.claim("userId", "abcd")))
+                .put().uri("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(modifiedUser), UserDTO.class)
                 .exchange()
@@ -95,7 +106,9 @@ public class UserControllerTest {
                 .location(new double[] {20.0, 30.0})
                 .build();
 
-        webTestClient.put().uri("/abcd")
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt.claim("userId", "abcd")))
+                .put().uri("/abcd")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(modifiedUser), UserDTO.class)
                 .exchange()
@@ -110,6 +123,18 @@ public class UserControllerTest {
         @Bean
         public UserMapper userMapper() {
             return UserMapper.INSTANCE;
+        }
+
+        @Bean
+        SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+            http
+                    .authorizeExchange(exchanges -> exchanges
+                            .anyExchange().authenticated()
+                    )
+                    .oauth2ResourceServer(oauth2 -> oauth2
+                            .jwt(withDefaults())
+                    ).csrf().disable();
+            return http.build();
         }
     }
 }

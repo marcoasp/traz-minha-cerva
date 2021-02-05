@@ -6,7 +6,10 @@ import br.com.trazminhacerva.users.endpoint.dto.UserDTO;
 import br.com.trazminhacerva.users.endpoint.exception.NotFoundException;
 import br.com.trazminhacerva.users.endpoint.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,9 +36,10 @@ public class UserController {
                 .map(userMapper::toDto);
     }
 
-    @PutMapping("/{userId}")
-    public Mono<UserDTO> updateUser(@PathVariable("userId") String id, @RequestBody UserDTO newUserDTO) {
-        return userRepository.findById(id)
+    @PutMapping
+    public Mono<UserDTO> updateUser(@AuthenticationPrincipal Mono<Jwt> principal, @RequestBody UserDTO newUserDTO) {
+        return
+                principal.flatMap(jwt -> userRepository.findById(jwt.getClaimAsString("userId")))
                 .switchIfEmpty(Mono.error(NotFoundException::new))
                 .flatMap(u -> userRepository.save(u.update(newUserDTO.getName(), newUserDTO.getLocation())))
                 .map(userMapper::toDto)
