@@ -11,7 +11,7 @@
 	<groupId>br.com.trazminhacerva</groupId>
 	<artifactId>sales</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Sales</name>
+	<name>sales</name>
 	<description>Microservice that handle sales</description>
 
 	<properties>

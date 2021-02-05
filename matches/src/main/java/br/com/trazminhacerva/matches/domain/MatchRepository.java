@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
  * @author Marco Prado
  * @version 1.0 05/02/2021
  */
-public interface MatchRepository extends ReactiveMongoRepository<Match, String> {
+public interface MatchRepository extends ReactiveMongoRepository<Match, String>, CustomMatchRepository {
 
     Flux<Match> findByUserId(String abcd);
 }

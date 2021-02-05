@@ -16,6 +16,6 @@ To do
   - Preço/l (between)
   - Nome
   - Tags
-- Visualização de Matches
+- ~~Visualização de Matches~~
   - Listar matches correntes
   - Status do match

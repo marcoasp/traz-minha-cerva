@@ -17,4 +17,5 @@ public interface MatchMapper {
     MatchMapper INSTANCE = Mappers.getMapper(MatchMapper.class);
 
     MatchDTO toDto(Match entity);
+    Match toEntity(MatchDTO entity);
 }

@@ -1,4 +1,7 @@
 spring:
+  cloud:
+    function:
+      definition: expiredSaleConsumer; newMatchConsumer
   security:
     oauth2:
       resourceserver:

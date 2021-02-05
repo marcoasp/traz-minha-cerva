@@ -22,6 +22,7 @@ public class Match {
     private final List<String> tags = new ArrayList<>();
     @GeoSpatialIndexed
     private final double[] location;
+    private MatchStatus matchStatus;
 
     @Builder
     public Match(
@@ -37,5 +38,6 @@ public class Match {
         this.tags.addAll(tags);
         this.pricePerLiter = pricePerLiter;
         this.location = location;
+        this.matchStatus = MatchStatus.ACTIVE;
     }
 }
