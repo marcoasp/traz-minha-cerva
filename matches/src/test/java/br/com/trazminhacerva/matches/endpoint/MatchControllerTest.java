@@ -2,6 +2,7 @@ package br.com.trazminhacerva.matches.endpoint;
 
 import br.com.trazminhacerva.matches.domain.Match;
 import br.com.trazminhacerva.matches.domain.MatchRepository;
+import br.com.trazminhacerva.matches.domain.MatchStatus;
 import br.com.trazminhacerva.matches.endpoint.dto.MatchDTO;
 import br.com.trazminhacerva.matches.endpoint.mapper.MatchMapper;
 import org.junit.jupiter.api.Test;
@@ -67,14 +68,18 @@ public class MatchControllerTest {
                         .name("Skol")
                         .pricePerLiter(10.0)
                         .location(new double[]{10.0, 20.0})
-                        .tags(Arrays.asList("Pilsen")).build(),
+                        .tags(Arrays.asList("Pilsen"))
+                        .status(MatchStatus.ACTIVE)
+                        .build(),
                 MatchDTO.builder()
                         .userId("abcd")
                         .saleId("hij")
                         .name("Apia")
                         .pricePerLiter(20.0)
                         .location(new double[]{10.0, 20.0})
-                        .tags(Arrays.asList("IPA")).build()
+                        .tags(Arrays.asList("IPA"))
+                        .status(MatchStatus.ACTIVE)
+                        .build()
         );
 
         webTestClient

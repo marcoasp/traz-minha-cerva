@@ -2,7 +2,6 @@ package br.com.trazminhacerva.matches.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class Match {
     private final List<String> tags = new ArrayList<>();
     @GeoSpatialIndexed
     private final double[] location;
-    private MatchStatus matchStatus;
+    private MatchStatus status;
 
     @Builder
     public Match(
@@ -38,6 +37,6 @@ public class Match {
         this.tags.addAll(tags);
         this.pricePerLiter = pricePerLiter;
         this.location = location;
-        this.matchStatus = MatchStatus.ACTIVE;
+        this.status = MatchStatus.ACTIVE;
     }
 }

@@ -1,10 +1,9 @@
 package br.com.trazminhacerva.matches.endpoint.dto;
 
+import br.com.trazminhacerva.matches.domain.MatchStatus;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +18,7 @@ public class MatchDTO {
     private String userId;
     private String name;
     private Double pricePerLiter;
-    private List<String> tags = new ArrayList<>();
+    private List<String> tags;
     private double[] location;
+    private MatchStatus status;
 }

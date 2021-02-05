@@ -18,6 +18,7 @@ import org.springframework.cloud.stream.binder.test.InputDestination;
 import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.Arrays;
@@ -40,6 +41,9 @@ public class NewMatchConsumerTest {
 
     @MockBean
     private MatchRepository matchRepository;
+
+    @MockBean
+    private ReactiveMongoTemplate reactiveMongoTemplate;
 
     @Test
     public void shouldSaveNewMatch() {
