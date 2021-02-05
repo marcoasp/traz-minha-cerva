@@ -12,6 +12,7 @@
     <modules>
         <module>sales</module>
         <module>users</module>
+        <module>matches</module>
     </modules>
     <build>
         <plugins>
