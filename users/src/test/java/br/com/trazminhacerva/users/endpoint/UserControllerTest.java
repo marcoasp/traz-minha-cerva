@@ -1,8 +1,11 @@
 package br.com.trazminhacerva.users.endpoint;
 
+import br.com.trazminhacerva.users.domain.Interest;
 import br.com.trazminhacerva.users.domain.User;
 import br.com.trazminhacerva.users.domain.UserRepository;
+import br.com.trazminhacerva.users.endpoint.dto.InterestDTO;
 import br.com.trazminhacerva.users.endpoint.dto.UserDTO;
+import br.com.trazminhacerva.users.endpoint.mapper.InterestMapper;
 import br.com.trazminhacerva.users.endpoint.mapper.UserMapper;
 import br.com.trazminhacerva.users.utils.ReactiveMockitoAnswers;
 import org.junit.jupiter.api.Test;
@@ -13,18 +16,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.config.Customizer.withDefaults;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
 
 /**
@@ -49,6 +53,7 @@ public class UserControllerTest {
                 .name("Marco")
                 .email("marco@email.com")
                 .location(new double[] {10.0, 20.0})
+                .interests(Collections.emptyList())
                 .build();
 
 
@@ -81,6 +86,7 @@ public class UserControllerTest {
                 .name("Marco Antonio da Silva Prado")
                 .email("marco@email.com")
                 .location(new double[] {20.0, 30.0})
+                .interests(Collections.emptyList())
                 .build();
 
 
@@ -117,12 +123,60 @@ public class UserControllerTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+
+    @Test
+    public void shouldUpdateUserInterests() {
+        List<Interest> currentInterests = Arrays.asList(
+                Interest.builder().pricePerLiterFrom(10.0).pricePerLiterTo(20.0).name("Brahma").tags(Arrays.asList("abc", "def")).build()
+        );
+        User currentUser = User.from("Marco", "marco@email.com", new double[]{10.0, 20.0}, currentInterests);
+        given(userRepository.findById("abcd")).willReturn(Mono.just(currentUser));
+        given(userRepository.save(any(User.class)))
+                .willAnswer(ReactiveMockitoAnswers::firstArgMono);
+
+        InterestDTO modifiedInterest = InterestDTO.builder()
+                .pricePerLiterFrom(20.0)
+                .pricePerLiterTo(30.0)
+                .name("Skol")
+                .tags(Arrays.asList("ghi"))
+                .build();
+
+        UserDTO expectedUser = UserDTO.builder()
+                .name("Marco")
+                .email("marco@email.com")
+                .location(new double[]{10.0, 20.0})
+                .interests(Arrays.asList(InterestDTO.builder()
+                        .pricePerLiterFrom(20.0)
+                        .pricePerLiterTo(30.0)
+                        .name("Skol")
+                        .tags(Arrays.asList("ghi")).build())
+                )
+                .build();
+
+
+        webTestClient
+                .mutateWith(mockJwt().jwt(jwt -> jwt.claim("userId", "abcd")))
+                .put().uri("/interest")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(Arrays.asList(modifiedInterest)), List.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserDTO.class).isEqualTo(expectedUser);
+
+        verify(userRepository).save(any(User.class));
+    }
+
     @TestConfiguration
     static class Config {
 
         @Bean
         public UserMapper userMapper() {
             return UserMapper.INSTANCE;
+        }
+
+        @Bean
+        public InterestMapper interestMapper() {
+            return InterestMapper.INSTANCE;
         }
 
         @Bean
