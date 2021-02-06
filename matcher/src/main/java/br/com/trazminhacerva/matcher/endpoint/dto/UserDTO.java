@@ -1,4 +1,4 @@
-package br.com.trazminhacerva.users.endpoint.dto;
+package br.com.trazminhacerva.matcher.endpoint.dto;
 
 import lombok.Builder;
 import lombok.Data;

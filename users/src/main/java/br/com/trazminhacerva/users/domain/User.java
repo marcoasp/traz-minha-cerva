@@ -22,6 +22,7 @@ public class User {
     private final Email email;
     @GeoSpatialIndexed
     private double[] location;
+    private double distance;
     private List<Interest> interests = new ArrayList<>();
 
     private User(final String name, final Email email, final double[] location) {
