@@ -127,7 +127,7 @@ public class UserControllerTest {
     @Test
     public void shouldUpdateUserInterests() {
         List<Interest> currentInterests = Arrays.asList(
-                Interest.builder().pricePerLiterFrom(10.0).pricePerLiterTo(20.0).name("Brahma").tags(Arrays.asList("abc", "def")).build()
+                Interest.builder().distance(5.0).pricePerLiterFrom(10.0).pricePerLiterTo(20.0).name("Brahma").tags(Arrays.asList("abc", "def")).build()
         );
         User currentUser = User.from("Marco", "marco@email.com", new double[]{10.0, 20.0}, currentInterests);
         given(userRepository.findById("abcd")).willReturn(Mono.just(currentUser));
@@ -138,6 +138,7 @@ public class UserControllerTest {
                 .pricePerLiterFrom(20.0)
                 .pricePerLiterTo(30.0)
                 .name("Skol")
+                .distance(10.0)
                 .tags(Arrays.asList("ghi"))
                 .build();
 
@@ -149,6 +150,7 @@ public class UserControllerTest {
                         .pricePerLiterFrom(20.0)
                         .pricePerLiterTo(30.0)
                         .name("Skol")
+                        .distance(10.0)
                         .tags(Arrays.asList("ghi")).build())
                 )
                 .build();

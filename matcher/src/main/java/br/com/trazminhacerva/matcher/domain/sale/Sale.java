@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.List;
  */
 @Getter
 @RequiredArgsConstructor
+@Document
 public class Sale {
-    @Id
     private final String id;
     private final String name;
     private final Double pricePerLiter;
-    private final List<String> tags = new ArrayList<>();
+    private final List<String> tags;
     @GeoSpatialIndexed
     private final double[] location;
     private final SaleStatus status;

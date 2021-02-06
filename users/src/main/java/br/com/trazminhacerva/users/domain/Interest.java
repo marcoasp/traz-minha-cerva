@@ -16,6 +16,7 @@ public class Interest {
     private Double pricePerLiterFrom;
     private Double pricePerLiterTo;
     private String name;
+    private double distance;
     private List<String> tags;
 
     public List<String> getTags() {

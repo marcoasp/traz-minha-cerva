@@ -17,6 +17,5 @@ public class UserDTO {
     private String name;
     private String email;
     private double[] location;
-    private double distance;
     private List<InterestDTO> interests;
 }
