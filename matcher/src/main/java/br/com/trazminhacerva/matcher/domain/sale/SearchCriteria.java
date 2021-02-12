@@ -18,8 +18,6 @@ import java.util.Optional;
 public class SearchCriteria {
 
     private final List<String> tags;
-    private final double[] location;
-    private final Double distance;
     private final Double pricePerLiterFrom;
     private final Double pricePerLiterTo;
 
@@ -29,17 +27,13 @@ public class SearchCriteria {
             criteria.and("tags").in(tags);
         }
 
-        Optional.ofNullable(distance).ifPresent(v ->
-                criteria.and("location")
-                        .nearSphere(new Point(location[0],location[1]))
-                        .maxDistance(new Distance(distance, Metrics.KILOMETERS).getNormalizedValue())
-        );
+
         Optional.ofNullable(pricePerLiterFrom).ifPresent(v -> criteria.and("pricePerLiter").gte(v));
         Optional.ofNullable(pricePerLiterTo).ifPresent(v -> criteria.and("pricePerLiter").lte(v));
         return criteria;
     }
 
     public static SearchCriteria of(final UserDTO user, final InterestDTO i) {
-        return new SearchCriteria(i.getTags(), user.getLocation(), i.getDistance(), i.getPricePerLiterFrom(), i.getPricePerLiterTo());
+        return new SearchCriteria(i.getTags(), i.getPricePerLiterFrom(), i.getPricePerLiterTo());
     }
 }

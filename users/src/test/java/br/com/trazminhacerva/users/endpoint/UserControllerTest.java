@@ -5,6 +5,7 @@ import br.com.trazminhacerva.users.domain.User;
 import br.com.trazminhacerva.users.domain.UserRepository;
 import br.com.trazminhacerva.users.endpoint.dto.InterestDTO;
 import br.com.trazminhacerva.users.endpoint.dto.UserDTO;
+import br.com.trazminhacerva.users.endpoint.dto.UserInterestsWrapperDTO;
 import br.com.trazminhacerva.users.endpoint.mapper.InterestMapper;
 import br.com.trazminhacerva.users.endpoint.mapper.UserMapper;
 import br.com.trazminhacerva.users.utils.ReactiveMockitoAnswers;
@@ -56,6 +57,13 @@ public class UserControllerTest {
                 .interests(Collections.emptyList())
                 .build();
 
+        UserDTO expectedUser = UserDTO.builder()
+                .name("Marco")
+                .email("marco@email.com")
+                .location(new double[] {10.0, 20.0})
+                .interests(Collections.emptyList())
+                .build();
+
 
         webTestClient
                 .mutateWith(mockJwt().jwt(jwt -> jwt.claim("userId", "abcd")))
@@ -64,7 +72,7 @@ public class UserControllerTest {
                 .body(Mono.just(newUser), UserDTO.class)
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(UserDTO.class).isEqualTo(newUser);
+                .expectBody(UserDTO.class).isEqualTo(expectedUser);
 
         verify(userRepository).save(any(User.class));
     }
@@ -127,30 +135,31 @@ public class UserControllerTest {
     @Test
     public void shouldUpdateUserInterests() {
         List<Interest> currentInterests = Arrays.asList(
-                Interest.builder().distance(5.0).pricePerLiterFrom(10.0).pricePerLiterTo(20.0).name("Brahma").tags(Arrays.asList("abc", "def")).build()
+                Interest.builder().pricePerLiterFrom(10.0).pricePerLiterTo(20.0).name("Brahma").tags(Arrays.asList("abc", "def")).build()
         );
         User currentUser = User.from("Marco", "marco@email.com", new double[]{10.0, 20.0}, currentInterests);
         given(userRepository.findById("abcd")).willReturn(Mono.just(currentUser));
         given(userRepository.save(any(User.class)))
                 .willAnswer(ReactiveMockitoAnswers::firstArgMono);
 
-        InterestDTO modifiedInterest = InterestDTO.builder()
-                .pricePerLiterFrom(20.0)
-                .pricePerLiterTo(30.0)
-                .name("Skol")
+        UserInterestsWrapperDTO newInterestsWrapper = UserInterestsWrapperDTO.builder()
                 .distance(10.0)
-                .tags(Arrays.asList("ghi"))
-                .build();
+                .interests(Arrays.asList(InterestDTO.builder()
+                        .pricePerLiterFrom(20.0)
+                        .pricePerLiterTo(30.0)
+                        .name("Skol")
+                        .tags(Arrays.asList("ghi"))
+                        .build())).build();
 
         UserDTO expectedUser = UserDTO.builder()
                 .name("Marco")
                 .email("marco@email.com")
                 .location(new double[]{10.0, 20.0})
+                .distance(10.0)
                 .interests(Arrays.asList(InterestDTO.builder()
                         .pricePerLiterFrom(20.0)
                         .pricePerLiterTo(30.0)
                         .name("Skol")
-                        .distance(10.0)
                         .tags(Arrays.asList("ghi")).build())
                 )
                 .build();
@@ -160,7 +169,7 @@ public class UserControllerTest {
                 .mutateWith(mockJwt().jwt(jwt -> jwt.claim("userId", "abcd")))
                 .put().uri("/interest")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(Arrays.asList(modifiedInterest)), List.class)
+                .body(Mono.just(newInterestsWrapper), UserInterestsWrapperDTO.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(UserDTO.class).isEqualTo(expectedUser);

@@ -4,6 +4,7 @@ import br.com.trazminhacerva.users.domain.User;
 import br.com.trazminhacerva.users.domain.UserRepository;
 import br.com.trazminhacerva.users.endpoint.dto.InterestDTO;
 import br.com.trazminhacerva.users.endpoint.dto.UserDTO;
+import br.com.trazminhacerva.users.endpoint.dto.UserInterestsWrapperDTO;
 import br.com.trazminhacerva.users.endpoint.exception.NotFoundException;
 import br.com.trazminhacerva.users.endpoint.mapper.InterestMapper;
 import br.com.trazminhacerva.users.endpoint.mapper.UserMapper;
@@ -50,11 +51,11 @@ public class UserController {
     }
 
     @PutMapping("/interest")
-    public Mono<UserDTO> updateInterests(@AuthenticationPrincipal Mono<Jwt> principal, @RequestBody List<InterestDTO> interests) {
+    public Mono<UserDTO> updateInterests(@AuthenticationPrincipal Mono<Jwt> principal, @RequestBody UserInterestsWrapperDTO interestsWrapper) {
         return
                 principal.flatMap(jwt -> userRepository.findById(jwt.getClaimAsString("userId")))
                         .switchIfEmpty(Mono.error(NotFoundException::new))
-                        .flatMap(u -> userRepository.save(u.updateInterests(interestMapper.toEntity(interests))))
+                        .flatMap(u -> userRepository.save(u.updateInterests(interestsWrapper.getDistance(), interestMapper.toEntity(interestsWrapper.getInterests()))))
                         .map(userMapper::toDto)
                 ;
     }

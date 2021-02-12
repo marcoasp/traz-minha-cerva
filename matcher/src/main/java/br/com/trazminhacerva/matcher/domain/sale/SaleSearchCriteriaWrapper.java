@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -24,10 +25,12 @@ public class SaleSearchCriteriaWrapper {
     private final String userEmail;
     private final double[] location;
     private final List<SearchCriteria> interestsCriteria;
+    private final double distance;
 
     public static SaleSearchCriteriaWrapper from(final UserDTO user) {
         return SaleSearchCriteriaWrapper.builder()
                 .location(user.getLocation())
+                .distance(user.getDistance())
                 .interestsCriteria(user.getInterests().stream().map(i -> SearchCriteria.of(user, i)).collect(toList()))
                 .build();
     }
@@ -37,6 +40,9 @@ public class SaleSearchCriteriaWrapper {
         if(!CollectionUtils.isEmpty(this.interestsCriteria)) {
             criteria.orOperator(this.interestsCriteria.stream().map(SearchCriteria::build).collect(toList()).toArray(new Criteria[0]));
         }
+        criteria.and("location")
+                .nearSphere(new Point(location[0],location[1]))
+                .maxDistance(new Distance(distance, Metrics.KILOMETERS).getNormalizedValue());
         return new Query(criteria);
     }
 }

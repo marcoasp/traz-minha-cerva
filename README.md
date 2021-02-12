@@ -20,5 +20,5 @@ To do
   - Listar matches correntes
   - Status do match
 - Matches
-  - Dar match de novo usuário com ofertas
+  - ~~Dar match de novo usuário com ofertas~~
   - Dar match de nova oferta com usuários

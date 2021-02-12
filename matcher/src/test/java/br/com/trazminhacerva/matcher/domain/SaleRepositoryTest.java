@@ -60,7 +60,8 @@ public class SaleRepositoryTest {
     public void shouldNotConsideredAlreadyExistingMatches() {
         UserDTO user = UserDTO.builder()
                 .location(new double[]{-23.2023046, -45.8639857})
-                .interests(Arrays.asList(InterestDTO.builder().distance(10).build())).build();
+                .distance(10)
+                .interests(Arrays.asList(InterestDTO.builder().build())).build();
 
         SaleSearchCriteriaWrapper criteria = SaleSearchCriteriaWrapper.from(user);
 
@@ -74,7 +75,8 @@ public class SaleRepositoryTest {
     @Test
     public void shouldSearchByTagOnly() {
         UserDTO user = UserDTO.builder().location(new double[]{-23.2023046, -45.8639857})
-                .interests(Arrays.asList(InterestDTO.builder().distance(10).tags(Arrays.asList("tag1")).build())).build();
+                .distance(10)
+                .interests(Arrays.asList(InterestDTO.builder().tags(Arrays.asList("tag1")).build())).build();
         SaleSearchCriteriaWrapper criteria = SaleSearchCriteriaWrapper.from(user);
         List<Sale> sales = repository.findBy(criteria);
 
@@ -85,7 +87,8 @@ public class SaleRepositoryTest {
     @Test
     public void shouldSearchByPriceOnly() {
         UserDTO user = UserDTO.builder().location(new double[]{-23.2023046, -45.8639857})
-                .interests(Arrays.asList(InterestDTO.builder().distance(10).pricePerLiterTo(10.0).build())).build();
+                .distance(10)
+                .interests(Arrays.asList(InterestDTO.builder().pricePerLiterTo(10.0).build())).build();
         SaleSearchCriteriaWrapper criteria = SaleSearchCriteriaWrapper.from(user);
         List<Sale> sales = repository.findBy(criteria);
 
@@ -97,7 +100,8 @@ public class SaleRepositoryTest {
     @Test
     public void shouldSearchByTagAndPrice() {
         UserDTO user = UserDTO.builder().location(new double[]{-23.2023046, -45.8639857})
-                .interests(Arrays.asList(InterestDTO.builder().distance(10).pricePerLiterTo(10.0).tags(Arrays.asList("tag1")).build())).build();
+                .distance(10)
+                .interests(Arrays.asList(InterestDTO.builder().pricePerLiterTo(10.0).tags(Arrays.asList("tag1")).build())).build();
         SaleSearchCriteriaWrapper criteria = SaleSearchCriteriaWrapper.from(user);
         List<Sale> sales = repository.findBy(criteria);
 

@@ -22,6 +22,7 @@ public class User {
     private final Email email;
     @GeoSpatialIndexed
     private double[] location;
+    private double distance;
     private List<Interest> interests = new ArrayList<>();
 
     private User(final String name, final Email email, final double[] location) {
@@ -49,7 +50,8 @@ public class User {
         return this;
     }
 
-    public User updateInterests(final List<Interest> newInterests) {
+    public User updateInterests(final double distance, final List<Interest> newInterests) {
+        this.distance = distance;
         this.interests.clear();
         this.interests.addAll(newInterests);
         return this;

@@ -7,16 +7,11 @@ import java.util.List;
 
 /**
  * @author Marco Prado
- * @version 1.0 01/02/2021
+ * @version 1.0 12/02/2021
  */
 @Data
 @Builder
-public class UserDTO {
-
-    private String id;
-    private String name;
-    private String email;
-    private double[] location;
+public class UserInterestsWrapperDTO {
     private double distance;
     private List<InterestDTO> interests;
 }
